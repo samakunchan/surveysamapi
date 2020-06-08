@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/annotations": "^1.10",
+        "fzaninotto/faker": "^1.9",
         "lexik/jwt-authentication-bundle": "^2.7",
         "liip/test-fixtures-bundle": "^1.9",
         "nelmio/api-doc-bundle": "^3.6",

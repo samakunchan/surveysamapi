@@ -25,7 +25,7 @@ class Survey
     private $question;
 
     /**
-     * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="survey")
+     * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="survey", cascade={"persist"})
      */
     private $answers;
 
