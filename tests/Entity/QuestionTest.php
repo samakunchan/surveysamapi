@@ -25,7 +25,7 @@ class QuestionTest extends TestCase
         $question = new Question();
         $question->setSentence($sentence);
 
-        $this->assertInstanceOf('App\Entity\Question', $question);
+        $this->assertInstanceOf(Question::class, $question);
         $this->assertIsString($question->getSentence());
         $this->assertStringContainsString('?', $sentence);
         $this->assertGreaterThan(15, strlen($sentence));
@@ -40,8 +40,21 @@ class QuestionTest extends TestCase
         $question = new Question();
         $question->setStatus($sentence);
 
-        $this->assertInstanceOf('App\Entity\Question', $question);
+        $this->assertInstanceOf(Question::class, $question);
         $this->assertIsString($question->getStatus());
         $this->assertStringContainsString('Complete', $sentence);
+    }
+
+    /**
+     * @test
+     */
+    public function answer()
+    {
+        $question = new Question();
+        $answer = new Answer();
+        $question->addAnswer($answer);
+
+        $this->assertInstanceOf(Question::class, $question);
+        $this->assertInstanceOf(Answer::class, $answer);
     }
 }
