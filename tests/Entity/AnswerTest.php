@@ -16,7 +16,7 @@ class AnswerTest extends TestCase
         $answer = new Answer();
         $answer->setSentence($sentence);
 
-        $this->assertInstanceOf('App\Entity\Answer', $answer);
+        $this->assertInstanceOf(Answer::class, $answer);
         $this->assertIsString($answer->getSentence());
         $this->assertStringContainsString('.', $sentence);
         $this->assertGreaterThan(5, strlen($sentence));
@@ -30,7 +30,7 @@ class AnswerTest extends TestCase
         $answer = new Answer();
         $answer->setCountAnswer(1);
 
-        $this->assertInstanceOf('App\Entity\Answer', $answer);
+        $this->assertInstanceOf(Answer::class, $answer);
         $this->assertIsInt($answer->getCountAnswer());
     }
 }

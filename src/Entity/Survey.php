@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\SurveyRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=SurveyRepository::class)
@@ -16,22 +18,31 @@ class Survey
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"survey_list"})
      */
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity=Question::class, inversedBy="survey", cascade={"persist", "remove"})
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"survey_list"})
      */
-    private $question;
+    private $title;
 
     /**
-     * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="survey", cascade={"persist"})
+     * @ORM\Column(type="datetime")
+     * @Groups({"survey_list"})
      */
-    private $answers;
+    private $createdAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Question::class, mappedBy="survey", cascade={"persist"})
+     * @Groups({"survey_list"})
+     */
+    private $questions;
 
     public function __construct()
     {
-        $this->answers = new ArrayCollection();
+        $this->questions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -39,43 +50,55 @@ class Survey
         return $this->id;
     }
 
-    public function getQuestion(): ?Question
+    public function getTitle(): ?string
     {
-        return $this->question;
+        return $this->title;
     }
 
-    public function setQuestion(?Question $question): self
+    public function setTitle(string $title): self
     {
-        $this->question = $question;
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * @return Collection|Answer[]
+     * @return Collection|Question[]
      */
-    public function getAnswers(): Collection
+    public function getQuestions(): Collection
     {
-        return $this->answers;
+        return $this->questions;
     }
 
-    public function addAnswer(Answer $answer): self
+    public function addQuestion(Question $question): self
     {
-        if (!$this->answers->contains($answer)) {
-            $this->answers[] = $answer;
-            $answer->setSurvey($this);
+        if (!$this->questions->contains($question)) {
+            $this->questions[] = $question;
+            $question->setSurvey($this);
         }
 
         return $this;
     }
 
-    public function removeAnswer(Answer $answer): self
+    public function removeQuestion(Question $question): self
     {
-        if ($this->answers->contains($answer)) {
-            $this->answers->removeElement($answer);
+        if ($this->questions->contains($question)) {
+            $this->questions->removeElement($question);
             // set the owning side to null (unless already changed)
-            if ($answer->getSurvey() === $this) {
-                $answer->setSurvey(null);
+            if ($question->getSurvey() === $this) {
+                $question->setSurvey(null);
             }
         }
 

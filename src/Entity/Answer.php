@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\AnswerRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=AnswerRepository::class)
@@ -14,24 +15,26 @@ class Answer
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"survey_show"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"survey_show"})
      */
     private $sentence;
 
-
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"survey_show"})
      */
     private $countAnswer;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Survey::class, inversedBy="answers")
+     * @ORM\ManyToOne(targetEntity=Question::class, inversedBy="answers")
      */
-    private $survey;
+    private $question;
 
     public function getSentence(): ?string
     {
@@ -57,14 +60,14 @@ class Answer
         return $this;
     }
 
-    public function getSurvey(): ?Survey
+    public function getQuestion(): ?Question
     {
-        return $this->survey;
+        return $this->question;
     }
 
-    public function setSurvey(?Survey $survey): self
+    public function setQuestion(?Question $question): self
     {
-        $this->survey = $survey;
+        $this->question = $question;
 
         return $this;
     }

@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\QuestionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=QuestionRepository::class)
@@ -14,23 +17,37 @@ class Question
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"survey_list"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"survey_list"})
      */
     private $sentence;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"survey_list"})
      */
     private $status;
 
     /**
-     * @ORM\OneToOne(targetEntity=Survey::class, mappedBy="question", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=Survey::class, inversedBy="questions")
      */
     private $survey;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="question", cascade={"persist"})
+     * @Groups({"survey_show"})
+     */
+    private $answers;
+
+    public function __construct()
+    {
+        $this->answers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -70,10 +87,35 @@ class Question
     {
         $this->survey = $survey;
 
-        // set (or unset) the owning side of the relation if necessary
-        $newQuestion = null === $survey ? null : $this;
-        if ($survey->getQuestion() !== $newQuestion) {
-            $survey->setQuestion($newQuestion);
+        return $this;
+    }
+
+    /**
+     * @return Collection|Answer[]
+     */
+    public function getAnswers(): Collection
+    {
+        return $this->answers;
+    }
+
+    public function addAnswer(Answer $answer): self
+    {
+        if (!$this->answers->contains($answer)) {
+            $this->answers[] = $answer;
+            $answer->setQuestion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnswer(Answer $answer): self
+    {
+        if ($this->answers->contains($answer)) {
+            $this->answers->removeElement($answer);
+            // set the owning side to null (unless already changed)
+            if ($answer->getQuestion() === $this) {
+                $answer->setQuestion(null);
+            }
         }
 
         return $this;
