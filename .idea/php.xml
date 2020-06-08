@@ -86,6 +86,11 @@
       <path value="$PROJECT_DIR$/vendor/symfony/options-resolver" />
       <path value="$PROJECT_DIR$/vendor/exsyst/swagger" />
       <path value="$PROJECT_DIR$/vendor/nelmio/api-doc-bundle" />
+      <path value="$PROJECT_DIR$/vendor/liip/test-fixtures-bundle" />
+      <path value="$PROJECT_DIR$/vendor/dama/doctrine-test-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/css-selector" />
+      <path value="$PROJECT_DIR$/vendor/symfony/dom-crawler" />
+      <path value="$PROJECT_DIR$/vendor/symfony/browser-kit" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />

@@ -1,4 +1,13 @@
 {
+    "dama/doctrine-test-bundle": {
+        "version": "4.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "4.0",
+            "ref": "56eaa387b5e48ebcc7c95a893b47dfa1ad51449c"
+        }
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -111,6 +120,9 @@
             "./config/packages/lexik_jwt_authentication.yaml"
         ]
     },
+    "liip/test-fixtures-bundle": {
+        "version": "1.9.1"
+    },
     "namshi/jose": {
         "version": "7.2.3"
     },
@@ -172,6 +184,9 @@
             "./config/packages/sensio_framework_extra.yaml"
         ]
     },
+    "symfony/browser-kit": {
+        "version": "v5.1.0"
+    },
     "symfony/cache": {
         "version": "v5.1.0"
     },
@@ -193,6 +208,9 @@
             "./bin/console"
         ]
     },
+    "symfony/css-selector": {
+        "version": "v5.1.0"
+    },
     "symfony/dependency-injection": {
         "version": "v5.1.0"
     },
@@ -200,6 +218,9 @@
         "version": "v2.1.2"
     },
     "symfony/doctrine-bridge": {
+        "version": "v5.1.0"
+    },
+    "symfony/dom-crawler": {
         "version": "v5.1.0"
     },
     "symfony/dotenv": {
