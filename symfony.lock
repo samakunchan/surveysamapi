@@ -105,6 +105,9 @@
     "exsyst/swagger": {
         "version": "v0.4.1"
     },
+    "fzaninotto/faker": {
+        "version": "v1.9.1"
+    },
     "lcobucci/jwt": {
         "version": "3.3.2"
     },
