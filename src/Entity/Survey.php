@@ -18,25 +18,25 @@ class Survey
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"survey_list"})
+     * @Groups({"survey_list", "survey_show"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"survey_list"})
+     * @Groups({"survey_list", "survey_show"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"survey_list"})
+     * @Groups({"survey_list", "survey_show"})
      */
     private $createdAt;
 
     /**
      * @ORM\OneToMany(targetEntity=Question::class, mappedBy="survey", cascade={"persist"})
-     * @Groups({"survey_list"})
+     * @Groups({"survey_list", "survey_show", "question_list"})
      */
     private $questions;
 

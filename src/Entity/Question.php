@@ -17,19 +17,19 @@ class Question
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"survey_list"})
+     * @Groups({"survey_list", "survey_show", "question_list", "question_show"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"survey_list"})
+     * @Groups({"survey_list", "survey_show", "question_list", "question_show"})
      */
     private $sentence;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"survey_list"})
+     * @Groups({"survey_list", "survey_show", "question_list", "question_show"})
      */
     private $status;
 
@@ -40,7 +40,7 @@ class Question
 
     /**
      * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="question", cascade={"persist"})
-     * @Groups({"survey_show"})
+     * @Groups({"question_list", "question_show", "answer_list"})
      */
     private $answers;
 

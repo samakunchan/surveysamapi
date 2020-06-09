@@ -15,19 +15,19 @@ class Answer
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"survey_show"})
+     * @Groups({"question_list", "question_show", "answer_list"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"survey_show"})
+     * @Groups({"question_list", "question_show", "answer_list"})
      */
     private $sentence;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"survey_show"})
+     * @Groups({"question_list", "question_show", "answer_list"})
      */
     private $countAnswer;
 
@@ -35,6 +35,11 @@ class Answer
      * @ORM\ManyToOne(targetEntity=Question::class, inversedBy="answers")
      */
     private $question;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getSentence(): ?string
     {
