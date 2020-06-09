@@ -46,7 +46,7 @@ class SurveyController extends AbstractController
      * @param ValidatorInterface $validator
      * @return JsonResponse
      */
-    public function create(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator)
+    public function create(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator): JsonResponse
     {
         try {
             $datas = $request->getContent();
@@ -77,15 +77,32 @@ class SurveyController extends AbstractController
 
     /**
      * @Route("api/surveys/{id}", name="survey_edit", methods={"PUT"})
+     * @param Request $request
      * @param Survey $survey
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $entityManager
+     * @param ValidatorInterface $validator
      * @return JsonResponse
      */
-    public function edit(Survey $survey)
+    public function edit(Request $request, Survey $survey, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator) :JsonResponse
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/SurveyController.php',
-        ]);
+        $datas = $request->getContent();
+        try {
+            $survey = $serializer->deserialize($datas, Survey::class, 'json', ['object_to_populate' => $survey]);
+            $errors = $validator->validate($survey);
+            if (count($errors) > 0) {
+                return $this->json($errors, Response::HTTP_BAD_REQUEST);
+            }
+            $survey->setCreatedAt($survey->getCreatedAt());
+            $entityManager->persist($survey);
+            $entityManager->flush();
+            return $this->json($survey, Response::HTTP_CREATED, [], ['groups' => ['survey_show']]);
+        } catch (NotEncodableValueException $e) {
+            return $this->json([
+                'status' => Response::HTTP_BAD_REQUEST,
+                'message' => $e->getMessage()
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
