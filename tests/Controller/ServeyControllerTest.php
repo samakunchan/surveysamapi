@@ -6,10 +6,6 @@ use App\Entity\Survey;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGenerator;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
 
 class ServeyControllerTest extends WebTestCase
 {
@@ -24,47 +20,49 @@ class ServeyControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
-        $this->surveyEntity = $this->client->getContainer()->get('doctrine')->getRepository(Survey::class)->findOneBy(['id' => 1]);
+        $allSurvey = $this->client->getContainer()->get('doctrine')->getRepository(Survey::class)->findAll();
+        $lastObject = end($allSurvey);
+        $this->surveyEntity = $this->client->getContainer()->get('doctrine')->getRepository(Survey::class)->findOneBy(['id' => $lastObject->getId()]);
     }
 
     /**
      * @test
      */
-    public function getAction(): void
+    public function listMethodAction(): void
     {
-        $this->endPoint('/api/surveys', 'GET');
+        $this->getEndPoint('/api/surveys', 'GET', Response::HTTP_OK);
     }
 
     /**
      * @test
      */
-    public function postAction(): void
+    public function showMethodAction(): void
     {
-        $this->endPoint('/api/surveys', 'POST');
+        $this->getEndPoint('/api/surveys/'.$this->surveyEntity->getId(), 'GET', Response::HTTP_OK);
     }
 
     /**
      * @test
      */
-    public function showAction(): void
+    public function createMethodAction(): void
     {
-        $this->endPoint('/api/surveys/'.$this->surveyEntity->getId(), 'GET');
+        $this->getEndPoint('/api/surveys', 'POST', Response::HTTP_CREATED, '{"title": "test"}');
     }
 
     /**
      * @test
      */
-    public function putAction(): void
+    public function editMethodAction(): void
     {
-        $this->endPoint('/api/surveys/'.$this->surveyEntity->getId(), 'PUT');
+        $this->getEndPoint('/api/surveys/'.$this->surveyEntity->getId(), 'PUT', Response::HTTP_CREATED, '{"title": "test"}');
     }
 
     /**
      * @test
      */
-    public function deleteAction(): void
+    public function deleteMethodAction(): void
     {
-        $this->endPoint('/api/surveys/'.$this->surveyEntity->getId(), 'DELETE');
+        $this->getEndPoint('/api/surveys/'.$this->surveyEntity->getId(), 'DELETE', Response::HTTP_OK);
     }
 
     /**
@@ -79,12 +77,22 @@ class ServeyControllerTest extends WebTestCase
     /**
      * @param string $url
      * @param string $method
+     * @param int $expectedStatusResponse
+     * @param string|null $content
      */
-    public function endPoint(string $url, string $method): void
+    public function getEndPoint(string $url, string $method, int $expectedStatusResponse, string $content = null): void
     {
-        $this->client->request($method, $url);
+        $server = [
+            'HTTP_ACCEPT' => 'application/json',
+            'HTTP_CONTENT_TYPE' => 'application/json; charset=UTF-8',
+        ];
+        if ($content) {
+            $this->client->request($method, $url, [], [], $server, $content);
+        } else {
+            $this->client->request($method, $url, [], [], $server);
+        }
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertResponseStatusCodeSame($expectedStatusResponse);
         $this->assertResponseIsSuccessful(sprintf('The %s public URL loads correctly.', $url));
     }
 }

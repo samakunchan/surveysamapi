@@ -84,19 +84,19 @@ class SurveyController extends AbstractController
      * @param ValidatorInterface $validator
      * @return JsonResponse
      */
-    public function edit(Request $request, Survey $survey, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator) :JsonResponse
+    public function edit(Request $request, Survey $survey, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator): JsonResponse
     {
         $datas = $request->getContent();
         try {
-            $survey = $serializer->deserialize($datas, Survey::class, 'json', ['object_to_populate' => $survey]);
-            $errors = $validator->validate($survey);
+            $surveySerialized = $serializer->deserialize($datas, Survey::class, 'json', ['object_to_populate' => $survey]);
+            $errors = $validator->validate($surveySerialized);
             if (count($errors) > 0) {
                 return $this->json($errors, Response::HTTP_BAD_REQUEST);
             }
-            $survey->setCreatedAt($survey->getCreatedAt());
-            $entityManager->persist($survey);
+            $surveySerialized->setCreatedAt($surveySerialized->getCreatedAt());
+            $entityManager->persist($surveySerialized);
             $entityManager->flush();
-            return $this->json($survey, Response::HTTP_CREATED, [], ['groups' => ['survey_show']]);
+            return $this->json($surveySerialized, Response::HTTP_CREATED, [], ['groups' => ['survey_show']]);
         } catch (NotEncodableValueException $e) {
             return $this->json([
                 'status' => Response::HTTP_BAD_REQUEST,
@@ -111,7 +111,7 @@ class SurveyController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return JsonResponse
      */
-    public function delete(Survey $survey, EntityManagerInterface $entityManager)
+    public function delete(Survey $survey, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
             $entityManager->remove($survey);
