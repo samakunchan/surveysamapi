@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class QuestionControllerTest extends WebTestCase
+class AnswerControllerTest extends WebTestCase
 {
     /**
      * @var KernelBrowser
@@ -38,19 +38,7 @@ class QuestionControllerTest extends WebTestCase
     public function listMethodAction(): void
     {
         $this->getEndPoint(
-            '/api/surveys/'.$this->surveyEntity->getId().'/questions', '
-            GET',
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function showMethodAction(): void
-    {
-        $this->getEndPoint(
-            '/api/surveys/'.$this->surveyEntity->getId().'/questions/'.$this->questionEntity->getId(),
+            '/api/surveys/'.$this->surveyEntity->getId().'/questions/'.$this->questionEntity->getId().'/answers',
             'GET',
             Response::HTTP_OK
         );
@@ -62,7 +50,7 @@ class QuestionControllerTest extends WebTestCase
     public function wrongEndPoint()
     {
         $this->getEndPoint(
-            '/api/surveys/'.$this->surveyEntity->getId().'/hellos',
+            '/api/surveys/'.$this->surveyEntity->getId().'/questions/'.$this->questionEntity->getId().'/hello',
             'GET',
             Response::HTTP_NOT_FOUND
         );
