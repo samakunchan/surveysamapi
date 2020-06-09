@@ -108,13 +108,20 @@ class SurveyController extends AbstractController
     /**
      * @Route("api/surveys/{id}", name="survey_delete", methods={"DELETE"})
      * @param Survey $survey
+     * @param EntityManagerInterface $entityManager
      * @return JsonResponse
      */
-    public function delete(Survey $survey)
+    public function delete(Survey $survey, EntityManagerInterface $entityManager)
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/SurveyController.php',
-        ]);
+        try {
+            $entityManager->remove($survey);
+            $entityManager->flush();
+            return $this->json($survey, Response::HTTP_OK, [], ['groups' => ['survey_show']]);
+        } catch (NotEncodableValueException $e) {
+            return $this->json([
+                'status' => Response::HTTP_BAD_REQUEST,
+                'message' => $e->getMessage()
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 }
