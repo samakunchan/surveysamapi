@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests;
 
+use App\Entity\Question;
 use App\Entity\Survey;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class ServeyControllerTest extends WebTestCase
+class QuestionControllerTest extends WebTestCase
 {
-
     /**
      * @var KernelBrowser
      */
@@ -20,12 +20,16 @@ class ServeyControllerTest extends WebTestCase
      */
     private $surveyEntity;
 
+    /**
+     * @var Question|null
+     */
+    private $questionEntity;
+
     protected function setUp(): void
     {
         $this->client = static::createClient();
-        $allSurvey = $this->client->getContainer()->get('doctrine')->getRepository(Survey::class)->findAll();
-        $lastObject = end($allSurvey);
-        $this->surveyEntity = $this->client->getContainer()->get('doctrine')->getRepository(Survey::class)->findOneBy(['id' => $lastObject->getId()]);
+        $this->surveyEntity = $this->client->getContainer()->get('doctrine')->getRepository(Survey::class)->findOneBy(['id' => 1]);
+        $this->questionEntity = $this->client->getContainer()->get('doctrine')->getRepository(Question::class)->findOneBy(['id' => $this->surveyEntity->getId()]);
     }
 
     /**
@@ -33,7 +37,7 @@ class ServeyControllerTest extends WebTestCase
      */
     public function listMethodAction(): void
     {
-        $this->getEndPoint('/api/surveys', 'GET', Response::HTTP_OK);
+        $this->getEndPoint('/api/surveys/'.$this->surveyEntity->getId().'/questions', 'GET', Response::HTTP_OK);
     }
 
     /**
@@ -41,31 +45,7 @@ class ServeyControllerTest extends WebTestCase
      */
     public function showMethodAction(): void
     {
-        $this->getEndPoint('/api/surveys/'.$this->surveyEntity->getId(), 'GET', Response::HTTP_OK);
-    }
-
-    /**
-     * @test
-     */
-    public function createMethodAction(): void
-    {
-        $this->getEndPoint('/api/surveys', 'POST', Response::HTTP_CREATED, '{"title": "test"}');
-    }
-
-    /**
-     * @test
-     */
-    public function editMethodAction(): void
-    {
-        $this->getEndPoint('/api/surveys/'.$this->surveyEntity->getId(), 'PUT', Response::HTTP_CREATED, '{"title": "test"}');
-    }
-
-    /**
-     * @test
-     */
-    public function deleteMethodAction(): void
-    {
-        $this->getEndPoint('/api/surveys/'.$this->surveyEntity->getId(), 'DELETE', Response::HTTP_OK);
+        $this->getEndPoint('/api/surveys/'.$this->surveyEntity->getId().'/questions/'.$this->questionEntity->getId(), 'GET', Response::HTTP_OK);
     }
 
     /**
@@ -73,7 +53,7 @@ class ServeyControllerTest extends WebTestCase
      */
     public function wrongEndPoint()
     {
-        $this->getEndPoint('/api/hello', 'GET', Response::HTTP_NOT_FOUND);
+        $this->getEndPoint('/api/surveys/'.$this->surveyEntity->getId().'/hellos', 'GET', Response::HTTP_NOT_FOUND);
     }
 
     /**
