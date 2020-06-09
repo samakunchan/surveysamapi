@@ -19,7 +19,7 @@ class SurveyFixtures extends Fixture
             for ($j = 0; $j < $faker->numberBetween(8, 15); $j++ ) {
                 $question = new Question();
                 $question->setSentence($faker->sentence.'?');
-                $question->setStatus($faker->randomElement(['Pending', 'Complete']));
+                $question->setStatus($faker->randomElement(['pending', 'complete']));
                 for($k = 0; $k < $faker->numberBetween(2, 5); $k++ ){
                     $answer = new Answer();
                     $answer->setSentence($faker->sentence);

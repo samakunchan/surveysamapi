@@ -32,10 +32,7 @@ class SurveyController extends AbstractController
      */
     public function show(Survey $survey)
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/SurveyController.php',
-        ]);
+        return $this->json($survey, Response::HTTP_OK, [], ['groups' => ['survey_show']]);
     }
 
     /**
