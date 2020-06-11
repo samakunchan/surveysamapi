@@ -28,7 +28,9 @@ class AnswerControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
-        $this->surveyEntity = $this->client->getContainer()->get('doctrine')->getRepository(Survey::class)->findOneBy(['id' => 1]);
+        $allSurvey = $this->client->getContainer()->get('doctrine')->getRepository(Survey::class)->findAll();
+        $lastObject = end($allSurvey);
+        $this->surveyEntity = $this->client->getContainer()->get('doctrine')->getRepository(Survey::class)->findOneBy(['id' => $lastObject->getId()]);
         $this->questionEntity = $this->client->getContainer()->get('doctrine')->getRepository(Question::class)->findOneBy(['id' => $this->surveyEntity->getId()]);
     }
 
@@ -60,23 +62,40 @@ class AnswerControllerTest extends WebTestCase
      * @param string $url
      * @param string $method
      * @param int $expectedStatusResponse
-     * @param string|null $content
      */
-    public function getEndPoint(string $url, string $method, int $expectedStatusResponse, string $content = null): void
+    public function getEndPoint(string $url, string $method, int $expectedStatusResponse): void
     {
-        $server = [
-            'HTTP_ACCEPT' => 'application/json',
-            'HTTP_CONTENT_TYPE' => 'application/json; charset=UTF-8',
-        ];
-        if ($content) {
-            $this->client->request($method, $url, [], [], $server, $content);
-        } else {
-            $this->client->request($method, $url, [], [], $server);
-        }
-
+        $this->createAuthenticatedClient('sam@test.fr', '123456');
+        $this->client->request($method, $url);
         $this->assertResponseStatusCodeSame($expectedStatusResponse);
         if ($expectedStatusResponse !== 404) {
             $this->assertResponseIsSuccessful(sprintf('The %s public URL loads correctly.', $url));
         }
+    }
+
+    /**
+     * Create a client with a default Authorization header.
+     * ALERT Dans la documenation il y a les underscores à enlever a username et password
+     * @param string $username
+     * @param string $password
+     * @return KernelBrowser
+     */
+    protected function createAuthenticatedClient($username = 'user', $password = 'password')
+    {
+        $this->client->request(
+            'POST', '/api/login_check', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'username' => $username,
+                'password' => $password,
+            ])
+        );
+
+        $data = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $data['token']));
+        $this->client->setServerParameter('HTTP_ACCEPT', sprintf('application/json'));
+        $this->client->setServerParameter('HTTP_CONTENT_TYPE', sprintf('application/json; charset=UTF-8'));
+
+        return $this->client;
     }
 }
