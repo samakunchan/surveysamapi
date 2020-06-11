@@ -1,9 +1,48 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: My App
+            title: Survey SamApi
             description: This is an awesome app!
             version: 1.0.0
+        securityDefinitions:
+            Bearer:
+                type: apiKey
+                description: 'Value: Bearer {jwt} | (Authenticate to get a token)'
+                name:  Authorization
+                in: header
+        tags:
+            - name: Authentication
+              description: Get app token for sign in and query API
+            - name: Survey
+              description: This handle all endpoint to create, read, update and delete surveys
+            - name: Question
+              description: This handle only 2 endpoints
+            - name: Answer
+              description: This handle only 2 endpoints
+            - name: User
+              description: Get list of all users
+        paths:
+            /doc.json:
+                get:
+                    tags:
+                        - "Documentation"
+                    summary: Documentation de l'API Survey API
+                    produces:
+                        - application/json
+                    responses:
+                        '200':
+                            description: OK
+            /doc:
+                get:
+                    tags:
+                        - "Documentation"
+                    summary: Documentation de l'API Survey API
+                    produces:
+                        - text/html
+                        - application/json
+                    responses:
+                        '200':
+                            description: OK
     areas: # to filter documented areas
         path_patterns:
             - ^/api(?!/doc$) # Accepts routes under /api except /api/doc

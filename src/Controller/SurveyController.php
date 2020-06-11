@@ -6,6 +6,7 @@ use App\Entity\Survey;
 use App\Repository\SurveyRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,10 +16,39 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security as nSecurity;
 
+/**
+ * Class SurveyController
+ * @package App\Controller
+ */
 class SurveyController extends AbstractController
 {
     /**
+     * @SWG\Tag(name="Survey")
+     * @SWG\Response(
+     *     response=200,
+     *     description="If the response is successfully displayed, this will be like the response below",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="`JWT Token not found` or`Expired JWT Token` or `Invalid JWT Token`",
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="`Forbidden`",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="`Not Found`",
+     * )
+     * @nSecurity(name="Bearer")
+     *
      * @Route("api/surveys", name="survey_list", methods={"GET"})
      * @param SurveyRepository $surveyRepository
      * @return JsonResponse
@@ -29,6 +59,36 @@ class SurveyController extends AbstractController
     }
 
     /**
+     * @SWG\Tag(name="Survey")
+     * @SWG\Parameter(
+     *     name="id",
+     *     description="Survey id",
+     *     in="path",
+     *     required=true,
+     *     type="integer"
+     * )
+     * @SWG\Response(
+     *     response=200,
+     *     description="If the response is successfully displayed, this will be like the response below",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="`JWT Token not found` or `Expired JWT Token` or `Invalid JWT Token`",
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="`Forbidden`",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="`Not Found`",
+     * )
+     * @nSecurity(name="Bearer")
+     *
      * @Route("api/surveys/{id}", name="survey_show", methods={"GET"})
      * @param Survey $survey
      * @return JsonResponse
@@ -39,6 +99,36 @@ class SurveyController extends AbstractController
     }
 
     /**
+     * @SWG\Tag(name="Survey")
+     * @SWG\Response(
+     *    response=200,
+     *    description="If the response is successfully displayed, this will be like the response below",
+     *    @SWG\Schema(
+     *       type="array",
+     *       @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=201,
+     *     description="When the survey is created",
+     *     @SWG\Schema(
+     *         @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="`JWT Token not found` or `Expired JWT Token` or `Invalid JWT Token`",
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="`Forbidden`",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="`Not Found`",
+     * )
+     * @nSecurity(name="Bearer")
+     *
      * @Route("api/surveys", name="survey_create", methods={"POST"})
      * @param Request $request
      * @param SerializerInterface $serializer
@@ -76,6 +166,35 @@ class SurveyController extends AbstractController
     }
 
     /**
+     * @SWG\Tag(name="Survey")
+     * @SWG\Response(
+     *    response=200,
+     *    description="If the response is successfully displayed, this will be like the response below",
+     *    @SWG\Schema(
+     *       type="array",
+     *       @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=201,
+     *     description="When the survey is created",
+     *     @SWG\Schema(
+     *         @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="`JWT Token not found` or `Expired JWT Token` or `Invalid JWT Token`",
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="`Forbidden`",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="`Not Found`",
+     * )
+     * @nSecurity(name="Bearer")
      * @Route("api/surveys/{id}", name="survey_edit", methods={"PUT"})
      * @param Request $request
      * @param Survey $survey
@@ -106,6 +225,17 @@ class SurveyController extends AbstractController
     }
 
     /**
+     * @SWG\Tag(name="Survey")
+     * @SWG\Response(
+     *    response=204,
+     *    description="If the response is successfully displayed, this will be like the response below",
+     *    @SWG\Schema(
+     *       type="array",
+     *       @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
+     *     )
+     * )
+     * @nSecurity(name="Bearer")
+     *
      * @Route("api/surveys/{id}", name="survey_delete", methods={"DELETE"})
      * @param Survey $survey
      * @param EntityManagerInterface $entityManager

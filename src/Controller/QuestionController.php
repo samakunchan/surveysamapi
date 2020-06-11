@@ -7,10 +7,13 @@ use App\Entity\Survey;
 use App\Repository\QuestionRepository;
 use App\Repository\SurveyRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security as nSecurity;
 
 /**
  * Class QuestionController
@@ -21,6 +24,29 @@ use Symfony\Component\Routing\Annotation\Route;
 class QuestionController extends AbstractController
 {
     /**
+     * @SWG\Tag(name="Question")
+     * @SWG\Response(
+     *     response=200,
+     *     description="If the response is successfully displayed, this will be like the response below",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Question::class, groups={"question_show"}))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="`JWT Token not found` or`Expired JWT Token` or `Invalid JWT Token`",
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="`Forbidden`",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="`Not Found`",
+     * )
+     * @nSecurity(name="Bearer")
+     *
      * @Route("/questions", name="question_list", methods={"GET"})
      * @param Survey $survey
      * @param SurveyRepository $surveyRepository
@@ -28,10 +54,34 @@ class QuestionController extends AbstractController
      */
     public function list(Survey $survey, SurveyRepository $surveyRepository): JsonResponse
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         return $this->json($surveyRepository->findBy(['id' => $survey->getId()]), Response::HTTP_OK, [], ['groups' => ['question_list']]);
     }
 
     /**
+     * @SWG\Tag(name="Question")
+     * @SWG\Response(
+     *     response=200,
+     *     description="If the response is successfully displayed, this will be like the response below",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Question::class, groups={"question_show"}))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="`JWT Token not found` or`Expired JWT Token` or `Invalid JWT Token`",
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="`Forbidden`",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="`Not Found`",
+     * )
+     * @nSecurity(name="Bearer")
+     *
      * @Route("/questions/{question_id}", name="question_show", methods={"GET"})
      * @ParamConverter("question", options={"id" = "question_id"})
      * @param Question $question
