@@ -126,6 +126,9 @@
     "liip/test-fixtures-bundle": {
         "version": "1.9.1"
     },
+    "mk/hal": {
+        "version": "2.0.1"
+    },
     "namshi/jose": {
         "version": "7.2.3"
     },
@@ -432,6 +435,9 @@
     },
     "symfony/yaml": {
         "version": "v5.1.0"
+    },
+    "torann/json-ld": {
+        "version": "0.0.19"
     },
     "twig/twig": {
         "version": "v3.0.3"
