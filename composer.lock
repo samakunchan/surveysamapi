@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e1daea7d730c162c4202ab980b0ed4db",
+    "content-hash": "8f94eadeafef13b10ffbdc8c46dcf02f",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -992,6 +992,42 @@
                 "testing"
             ],
             "time": "2020-05-15T16:02:44+00:00"
+        },
+        {
+            "name": "mk/hal",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Mo0812/MKHal.git",
+                "reference": "a184ac2a6ad88a0e162dd50700a9f1d07e1d7c50"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Mo0812/MKHal/zipball/a184ac2a6ad88a0e162dd50700a9f1d07e1d7c50",
+                "reference": "a184ac2a6ad88a0e162dd50700a9f1d07e1d7c50",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Moritz Kanzler",
+                    "email": "developer@moritzkanzler.de"
+                }
+            ],
+            "description": "Implementation of HAL standart for using in REST API responses or similiar",
+            "time": "2019-02-04T16:00:40+00:00"
         },
         {
             "name": "namshi/jose",
@@ -4453,6 +4489,57 @@
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
             "time": "2020-05-20T17:43:50+00:00"
+        },
+        {
+            "name": "torann/json-ld",
+            "version": "0.0.19",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Torann/json-ld.git",
+                "reference": "45738178c8eeea28a30925826537e87c3020de5a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Torann/json-ld/zipball/45738178c8eeea28a30925826537e87c3020de5a",
+                "reference": "45738178c8eeea28a30925826537e87c3020de5a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9.4",
+                "phpunit/phpunit": "~5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "JsonLd\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Daniel Stainback",
+                    "email": "torann@gmail.com"
+                }
+            ],
+            "description": "Extremely simple JSON-LD markup generator.",
+            "keywords": [
+                "JSON-LD",
+                "generator",
+                "schema",
+                "structured-data"
+            ],
+            "time": "2020-03-10T17:25:19+00:00"
         },
         {
             "name": "twig/twig",

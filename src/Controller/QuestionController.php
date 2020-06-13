@@ -27,7 +27,7 @@ class QuestionController extends AbstractController
      * @SWG\Tag(name="Question")
      * @SWG\Response(
      *     response=200,
-     *     description="If the response is successfully displayed, this will be like the response below",
+     *     description="Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.",
      *     @SWG\Schema(
      *         type="array",
      *         @SWG\Items(ref=@Model(type=Question::class, groups={"question_show"}))
@@ -35,15 +35,15 @@ class QuestionController extends AbstractController
      * )
      * @SWG\Response(
      *     response=401,
-     *     description="`JWT Token not found` or`Expired JWT Token` or `Invalid JWT Token`",
+     *     description="`Unauthorized`. When no or invalid authentication details are provided. Also useful to trigger an auth popup if the API is used from a browser Examples:`JWT Token not found` or`Expired JWT Token` or `Invalid JWT Token`.",
      * )
      * @SWG\Response(
      *     response=403,
-     *     description="`Forbidden`",
+     *     description="`Forbidden`. When authentication succeeded but authenticated user doesn't have access to the resource.",
      * )
      * @SWG\Response(
      *     response=404,
-     *     description="`Not Found`",
+     *     description="`Not Found`. When a non-existent resource is requested.",
      * )
      * @nSecurity(name="Bearer")
      *
@@ -62,7 +62,7 @@ class QuestionController extends AbstractController
      * @SWG\Tag(name="Question")
      * @SWG\Response(
      *     response=200,
-     *     description="If the response is successfully displayed, this will be like the response below",
+     *     description="Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.",
      *     @SWG\Schema(
      *         type="array",
      *         @SWG\Items(ref=@Model(type=Question::class, groups={"question_show"}))
@@ -70,15 +70,15 @@ class QuestionController extends AbstractController
      * )
      * @SWG\Response(
      *     response=401,
-     *     description="`JWT Token not found` or`Expired JWT Token` or `Invalid JWT Token`",
+     *     description="`Unauthorized`. When no or invalid authentication details are provided. Also useful to trigger an auth popup if the API is used from a browser Examples:`JWT Token not found` or`Expired JWT Token` or `Invalid JWT Token`.",
      * )
      * @SWG\Response(
      *     response=403,
-     *     description="`Forbidden`",
+     *     description="`Forbidden`. When authentication succeeded but authenticated user doesn't have access to the resource.",
      * )
      * @SWG\Response(
      *     response=404,
-     *     description="`Not Found`",
+     *     description="`Not Found`. When a non-existent resource is requested.",
      * )
      * @nSecurity(name="Bearer")
      *

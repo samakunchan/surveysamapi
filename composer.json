@@ -9,6 +9,7 @@
         "fzaninotto/faker": "^1.9",
         "lexik/jwt-authentication-bundle": "^2.7",
         "liip/test-fixtures-bundle": "^1.9",
+        "mk/hal": "^2.0",
         "nelmio/api-doc-bundle": "^3.6",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/asset": "5.1.*",
@@ -20,7 +21,8 @@
         "symfony/serializer-pack": "^1.0",
         "symfony/twig-bundle": "5.1.*",
         "symfony/validator": "5.1.*",
-        "symfony/yaml": "5.1.*"
+        "symfony/yaml": "5.1.*",
+        "torann/json-ld": "^0.0.19"
     },
     "require-dev": {
         "dama/doctrine-test-bundle": "^6.3",

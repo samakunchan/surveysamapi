@@ -27,7 +27,7 @@ class AnswerController extends AbstractController
      * @SWG\Tag(name="Answer")
      * @SWG\Response(
      *     response=200,
-     *     description="If the response is successfully displayed, this will be like the response below",
+     *     description="Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.",
      *     @SWG\Schema(
      *         type="array",
      *         @SWG\Items(ref=@Model(type=Answer::class, groups={"answer_list"}))
@@ -39,11 +39,11 @@ class AnswerController extends AbstractController
      * )
      * @SWG\Response(
      *     response=403,
-     *     description="`Forbidden`",
+     *     description="`Forbidden`. When authentication succeeded but authenticated user doesn't have access to the resource.",
      * )
      * @SWG\Response(
      *     response=404,
-     *     description="`Not Found`",
+     *     description="`Not Found`. When a non-existent resource is requested.",
      * )
      * @nSecurity(name="Bearer")
      *

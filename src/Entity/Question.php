@@ -23,7 +23,7 @@ class Question
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"survey_list", "survey_show", "question_list", "question_show"})
+     * @Groups({"survey_list", "question_list", "question_show"})
      */
     private $sentence;
 

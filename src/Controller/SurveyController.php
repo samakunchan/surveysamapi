@@ -6,6 +6,9 @@ use App\Entity\Survey;
 use App\Repository\SurveyRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use JsonLd\Context;
+use MK\HAL\HALLink;
+use MK\HAL\HALObject;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,7 +32,7 @@ class SurveyController extends AbstractController
      * @SWG\Tag(name="Survey")
      * @SWG\Response(
      *     response=200,
-     *     description="If the response is successfully displayed, this will be like the response below",
+     *     description="Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.",
      *     @SWG\Schema(
      *         type="array",
      *         @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
@@ -37,25 +40,34 @@ class SurveyController extends AbstractController
      * )
      * @SWG\Response(
      *     response=401,
-     *     description="`JWT Token not found` or`Expired JWT Token` or `Invalid JWT Token`",
+     *     description="`Unauthorized`. When no or invalid authentication details are provided. Also useful to trigger an auth popup if the API is used from a browser Examples:`JWT Token not found` or`Expired JWT Token` or `Invalid JWT Token`.",
      * )
      * @SWG\Response(
      *     response=403,
-     *     description="`Forbidden`",
+     *     description="`Forbidden`. When authentication succeeded but authenticated user doesn't have access to the resource.",
      * )
      * @SWG\Response(
      *     response=404,
-     *     description="`Not Found`",
+     *     description="`Not Found`. When a non-existent resource is requested.",
      * )
      * @nSecurity(name="Bearer")
      *
+     * Pour les liens: https://github.com/Mo0812/MKHal
+     * Pour le context: https://github.com/Torann/json-ld
      * @Route("api/surveys", name="survey_list", methods={"GET"})
      * @param SurveyRepository $surveyRepository
      * @return JsonResponse
      */
     public function list(SurveyRepository $surveyRepository): JsonResponse
     {
-        return $this->json($surveyRepository->findAll(), Response::HTTP_OK, [], ['groups' => ['survey_list']]);
+        $context = $this->getContext();
+        // array_merge va servir a fusionner l'object créé avec pour le context et le fetchAll... et ça fait propre quand on utilise postman
+        $datas = array_merge(
+            $context->getProperties(),
+            ['nb_results' => count($surveyRepository->findAll())],
+            ['values' => $surveyRepository->findAll()]
+        );
+        return $this->json($datas, Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*'], ['groups' => ['survey_list']]);
     }
 
     /**
@@ -69,7 +81,7 @@ class SurveyController extends AbstractController
      * )
      * @SWG\Response(
      *     response=200,
-     *     description="If the response is successfully displayed, this will be like the response below",
+     *     description="Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.",
      *     @SWG\Schema(
      *         type="array",
      *         @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
@@ -77,15 +89,15 @@ class SurveyController extends AbstractController
      * )
      * @SWG\Response(
      *     response=401,
-     *     description="`JWT Token not found` or `Expired JWT Token` or `Invalid JWT Token`",
+     *     description="`Unauthorized`. When no or invalid authentication details are provided. Also useful to trigger an auth popup if the API is used from a browser Examples:`JWT Token not found` or`Expired JWT Token` or `Invalid JWT Token`.",
      * )
      * @SWG\Response(
      *     response=403,
-     *     description="`Forbidden`",
+     *     description="`Forbidden`. When authentication succeeded but authenticated user doesn't have access to the resource.",
      * )
      * @SWG\Response(
      *     response=404,
-     *     description="`Not Found`",
+     *     description="`Not Found`. When a non-existent resource is requested.",
      * )
      * @nSecurity(name="Bearer")
      *
@@ -95,14 +107,21 @@ class SurveyController extends AbstractController
      */
     public function show(Survey $survey): JsonResponse
     {
-        return $this->json($survey, Response::HTTP_OK, [], ['groups' => ['survey_show']]);
+        $url = $this->generateUrl('survey_show', ['id'=> $survey->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
+        $hal = new HALObject($url);
+
+
+        $hal->addData(['survey' => $survey]);
+        $hal->addLink('update', new HALLink($url));
+        $hal->addLink('delete', new HALLink($url));
+        return $this->json($hal, Response::HTTP_OK, [], ['groups' => ['survey_show']]);
     }
 
     /**
      * @SWG\Tag(name="Survey")
      * @SWG\Response(
      *    response=200,
-     *    description="If the response is successfully displayed, this will be like the response below",
+     *    description="Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.",
      *    @SWG\Schema(
      *       type="array",
      *       @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
@@ -110,22 +129,22 @@ class SurveyController extends AbstractController
      * )
      * @SWG\Response(
      *     response=201,
-     *     description="When the survey is created",
+     *     description="`Created`. Response to a POST that results in a creation. Should be combined with a Location header pointing to the location of the new resource.",
      *     @SWG\Schema(
      *         @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
      *     )
      * )
      * @SWG\Response(
      *     response=401,
-     *     description="`JWT Token not found` or `Expired JWT Token` or `Invalid JWT Token`",
+     *     description="`Unauthorized`. When no or invalid authentication details are provided. Also useful to trigger an auth popup if the API is used from a browser Examples:`JWT Token not found` or`Expired JWT Token` or `Invalid JWT Token`.",
      * )
      * @SWG\Response(
      *     response=403,
-     *     description="`Forbidden`",
+     *     description="`Forbidden`. When authentication succeeded but authenticated user doesn't have access to the resource.",
      * )
      * @SWG\Response(
      *     response=404,
-     *     description="`Not Found`",
+     *     description="`Not Found`. When a non-existent resource is requested.",
      * )
      * @nSecurity(name="Bearer")
      *
@@ -169,7 +188,7 @@ class SurveyController extends AbstractController
      * @SWG\Tag(name="Survey")
      * @SWG\Response(
      *    response=200,
-     *    description="If the response is successfully displayed, this will be like the response below",
+     *    description="Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.",
      *    @SWG\Schema(
      *       type="array",
      *       @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
@@ -177,22 +196,22 @@ class SurveyController extends AbstractController
      * )
      * @SWG\Response(
      *     response=201,
-     *     description="When the survey is created",
+     *     description="`Created`. Response to a POST that results in a creation. Should be combined with a Location header pointing to the location of the new resource.",
      *     @SWG\Schema(
      *         @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
      *     )
      * )
      * @SWG\Response(
      *     response=401,
-     *     description="`JWT Token not found` or `Expired JWT Token` or `Invalid JWT Token`",
+     *     description="`Unauthorized`. When no or invalid authentication details are provided. Also useful to trigger an auth popup if the API is used from a browser Examples:`JWT Token not found` or`Expired JWT Token` or `Invalid JWT Token`",
      * )
      * @SWG\Response(
      *     response=403,
-     *     description="`Forbidden`",
+     *     description="`Forbidden`. When authentication succeeded but authenticated user doesn't have access to the resource.",
      * )
      * @SWG\Response(
      *     response=404,
-     *     description="`Not Found`",
+     *     description="`Not Found`. When a non-existent resource is requested.",
      * )
      * @nSecurity(name="Bearer")
      * @Route("api/surveys/{id}", name="survey_edit", methods={"PUT"})
@@ -228,7 +247,7 @@ class SurveyController extends AbstractController
      * @SWG\Tag(name="Survey")
      * @SWG\Response(
      *    response=204,
-     *    description="If the response is successfully displayed, this will be like the response below",
+     *    description="`No Content`. Response to a successful request that won't be returning a body (like a DELETE request).",
      *    @SWG\Schema(
      *       type="array",
      *       @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
@@ -253,5 +272,19 @@ class SurveyController extends AbstractController
                 'message' => $e->getMessage()
             ], Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    /**
+     * @return Context
+     */
+    private function getContext(): Context
+    {
+        return Context::create('organization', [
+            'name' => 'Samakunchan Technology',
+            'description' => 'Développeur web freelance',
+            'email' => 'cedric.badjah@gmail.com',
+            'address' => 'Montpellier',
+            'url' => 'https://samakunchan-technology.com/'
+        ]);
     }
 }
