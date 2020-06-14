@@ -108,6 +108,9 @@
     "fzaninotto/faker": {
         "version": "v1.9.1"
     },
+    "gesdinet/jwt-refresh-token-bundle": {
+        "version": "v0.9.1"
+    },
     "lcobucci/jwt": {
         "version": "3.3.2"
     },

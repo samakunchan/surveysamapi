@@ -48,6 +48,7 @@ class QuestionController extends AbstractController
      * @nSecurity(name="Bearer")
      *
      * @Route("/questions", name="question_list", methods={"GET"})
+     *
      * @param Survey $survey
      * @param SurveyRepository $surveyRepository
      * @return JsonResponse
@@ -83,6 +84,7 @@ class QuestionController extends AbstractController
      * @nSecurity(name="Bearer")
      *
      * @Route("/questions/{question_id}", name="question_show", methods={"GET"})
+     *
      * @ParamConverter("question", options={"id" = "question_id"})
      * @param Question $question
      * @param QuestionRepository $questionRepository
