@@ -19,6 +19,22 @@ class SurveyRepository extends ServiceEntityRepository
         parent::__construct($registry, Survey::class);
     }
 
+    public function paginateAt(int $page)
+    {
+        return $this->createQueryBuilder('s')
+            ->orderBy('s.id', 'ASC')
+            ->setFirstResult( ($page - 1) * 5)
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function getNbPages()
+    {
+        return (int) ceil(count($this->findAll()) / 5);
+    }
+
     // /**
     //  * @return Survey[] Returns an array of Survey objects
     //  */

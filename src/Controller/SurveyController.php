@@ -25,6 +25,7 @@ use Nelmio\ApiDocBundle\Annotation\Security as nSecurity;
 /**
  * Class SurveyController
  * @package App\Controller
+ * @Route("/api")
  */
 class SurveyController extends AbstractController
 {
@@ -52,20 +53,34 @@ class SurveyController extends AbstractController
      * )
      * @nSecurity(name="Bearer")
      *
-     * Pour les liens: https://github.com/Mo0812/MKHal
      * Pour le context: https://github.com/Torann/json-ld
-     * @Route("api/surveys", name="survey_list", methods={"GET"})
+     * Pour les liens: https://github.com/Mo0812/MKHal
+     *
+     * @Route("/surveys", defaults={"page": "1", "_format"="json"}, name="survey_list", methods={"GET"})
      * @param SurveyRepository $surveyRepository
+     * @param Request $request
      * @return JsonResponse
      */
-    public function list(SurveyRepository $surveyRepository): JsonResponse
+    public function list(SurveyRepository $surveyRepository, Request $request): JsonResponse
     {
+        $page = (int)($request->query->get('page') ? $request->query->get('page') : 1);
+        $first = $this->generateUrl('survey_list', ['page'=> 1], UrlGeneratorInterface::ABSOLUTE_URL);
+        $previous = $this->generateUrl('survey_list', ['page'=> ($page ===1) ? 1 : $surveyRepository->getNbPages()], UrlGeneratorInterface::ABSOLUTE_URL);
+        $next = $this->generateUrl('survey_list', ['page'=> ((($page === $surveyRepository->getNbPages()) ? $surveyRepository->getNbPages() : ($page +1)))], UrlGeneratorInterface::ABSOLUTE_URL);
+        $last = $this->generateUrl('survey_list', ['page'=> $surveyRepository->getNbPages()], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $hal = new HALObject($this->generateUrl('survey_list', ['page'=> $page], UrlGeneratorInterface::ABSOLUTE_URL));
+        $hal->addLink('first', new HALLink($first));
+        $hal->addLink('previous', new HALLink($previous));
+        $hal->addLink('next', new HALLink($next));
+        $hal->addLink('last', new HALLink($last));
+
         $context = $this->getContext();
-        // array_merge va servir a fusionner l'object créé avec pour le context et le fetchAll... et ça fait propre quand on utilise postman
         $datas = array_merge(
             $context->getProperties(),
+            ['paginations' => $hal],
             ['nb_results' => count($surveyRepository->findAll())],
-            ['values' => $surveyRepository->findAll()]
+            ['values' => $surveyRepository->paginateAt($page)]
         );
         return $this->json($datas, Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*'], ['groups' => ['survey_list']]);
     }
@@ -101,7 +116,7 @@ class SurveyController extends AbstractController
      * )
      * @nSecurity(name="Bearer")
      *
-     * @Route("api/surveys/{id}", name="survey_show", methods={"GET"})
+     * @Route("/surveys/{id}", name="survey_show", methods={"GET"})
      * @param Survey $survey
      * @return JsonResponse
      */
@@ -148,7 +163,8 @@ class SurveyController extends AbstractController
      * )
      * @nSecurity(name="Bearer")
      *
-     * @Route("api/surveys", name="survey_create", methods={"POST"})
+     * @Route("/surveys", name="survey_create", methods={"POST"})
+     *
      * @param Request $request
      * @param SerializerInterface $serializer
      * @param EntityManagerInterface $entityManager
@@ -214,7 +230,9 @@ class SurveyController extends AbstractController
      *     description="`Not Found`. When a non-existent resource is requested.",
      * )
      * @nSecurity(name="Bearer")
-     * @Route("api/surveys/{id}", name="survey_edit", methods={"PUT"})
+     *
+     * @Route("/surveys/{id}", name="survey_edit", methods={"PUT"})
+     *
      * @param Request $request
      * @param Survey $survey
      * @param SerializerInterface $serializer
@@ -255,7 +273,8 @@ class SurveyController extends AbstractController
      * )
      * @nSecurity(name="Bearer")
      *
-     * @Route("api/surveys/{id}", name="survey_delete", methods={"DELETE"})
+     * @Route("/surveys/{id}", name="survey_delete", methods={"DELETE"})
+     *
      * @param Survey $survey
      * @param EntityManagerInterface $entityManager
      * @return JsonResponse
