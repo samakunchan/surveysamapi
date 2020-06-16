@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security as nSecurity;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Class QuestionController
@@ -51,11 +53,21 @@ class QuestionController extends AbstractController
      *
      * @param Survey $survey
      * @param SurveyRepository $surveyRepository
+     * @param CacheInterface $cache
      * @return JsonResponse
+     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function list(Survey $survey, SurveyRepository $surveyRepository): JsonResponse
+    public function list(Survey $survey, SurveyRepository $surveyRepository, CacheInterface $cache): JsonResponse
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $result = $cache->get('question_list_cache'.$survey->getId().$survey->getCreatedAt()->format('YmdHis'), function (ItemInterface $item) use ($survey, $surveyRepository) {
+            $item->expiresAfter(10);
+            return $this->json($surveyRepository->findBy(['id' => $survey->getId()]), Response::HTTP_OK, [], ['groups' => ['question_list']]);
+        });
+
+        if ($result) {
+            return $result;
+        }
+
         return $this->json($surveyRepository->findBy(['id' => $survey->getId()]), Response::HTTP_OK, [], ['groups' => ['question_list']]);
     }
 
@@ -88,10 +100,21 @@ class QuestionController extends AbstractController
      * @ParamConverter("question", options={"id" = "question_id"})
      * @param Question $question
      * @param QuestionRepository $questionRepository
+     * @param CacheInterface $cache
      * @return JsonResponse
+     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function show(Question $question, QuestionRepository $questionRepository): JsonResponse
+    public function show(Question $question, QuestionRepository $questionRepository, CacheInterface $cache): JsonResponse
     {
+        $result = $cache->get('question_show_cache'.$question->getId(), function (ItemInterface $item) use ($question, $questionRepository) {
+            $item->expiresAfter(10);
+            return $this->json($questionRepository->findBy(['id' => $question->getId()]), Response::HTTP_OK, [], ['groups' => ['question_show']]);
+        });
+
+        if ($result) {
+            return $result;
+        }
+
         return $this->json($questionRepository->findBy(['id' => $question->getId()]), Response::HTTP_OK, [], ['groups' => ['question_show']]);
     }
 }

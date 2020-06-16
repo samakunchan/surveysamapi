@@ -1,7 +1,7 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: Survey SamApi
+            title: S.S.A - Survey Sam Api
             description: This is an awesome app!
             version: 1.0.0
         securityDefinitions:

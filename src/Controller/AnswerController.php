@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security as nSecurity;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Class AnswerController
@@ -50,10 +52,20 @@ class AnswerController extends AbstractController
      * @Route("/answers", name="answser_list", methods={"GET"})
      * @param Question $question
      * @param QuestionRepository $questionRepository
+     * @param CacheInterface $cache
      * @return JsonResponse
+     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function list(Question $question, QuestionRepository $questionRepository): JsonResponse
+    public function list(Question $question, QuestionRepository $questionRepository, CacheInterface $cache): JsonResponse
     {
+        $result = $cache->get('answer_list_cache'.$question->getId(), function (ItemInterface $item) use ($question, $questionRepository) {
+            $item->expiresAfter(10);
+            return $this->json($questionRepository->findBy(['id' => $question->getId()]), Response::HTTP_OK, [], ['groups' => ['answer_list']]);
+        });
+
+        if ($result) {
+            return $result;
+        }
         return $this->json($questionRepository->findBy(['id' => $question->getId()]), Response::HTTP_OK, [], ['groups' => ['answer_list']]);
     }
 }
