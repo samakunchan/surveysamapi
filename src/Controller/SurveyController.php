@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use JsonLd\Context;
 use MK\HAL\HALLink;
 use MK\HAL\HALObject;
+use Psr\Cache\InvalidArgumentException;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,6 +22,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security as nSecurity;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+
 
 /**
  * Class SurveyController
@@ -59,31 +63,42 @@ class SurveyController extends AbstractController
      * @Route("/surveys", defaults={"page": "1", "_format"="json"}, name="survey_list", methods={"GET"})
      * @param SurveyRepository $surveyRepository
      * @param Request $request
+     * @param CacheInterface $cache
      * @return JsonResponse
+     * @throws InvalidArgumentException
      */
-    public function list(SurveyRepository $surveyRepository, Request $request): JsonResponse
+    public function list(SurveyRepository $surveyRepository, Request $request, CacheInterface $cache): JsonResponse
     {
         $page = (int)($request->query->get('page') ? $request->query->get('page') : 1);
-        $first = $this->generateUrl('survey_list', ['page'=> 1], UrlGeneratorInterface::ABSOLUTE_URL);
-        $previous = $this->generateUrl('survey_list', ['page'=> ($page ===1) ? 1 : $surveyRepository->getNbPages()], UrlGeneratorInterface::ABSOLUTE_URL);
-        $next = $this->generateUrl('survey_list', ['page'=> ((($page === $surveyRepository->getNbPages()) ? $surveyRepository->getNbPages() : ($page +1)))], UrlGeneratorInterface::ABSOLUTE_URL);
-        $last = $this->generateUrl('survey_list', ['page'=> $surveyRepository->getNbPages()], UrlGeneratorInterface::ABSOLUTE_URL);
+        $result = $cache->get('survey_list_cache'.$page, function (ItemInterface $item) use ($surveyRepository, $request, $page) {
+            // $item->expiresAt(new DateTime('tomorow'));
+            $first = $this->generateUrl('survey_list', ['page'=> 1], UrlGeneratorInterface::ABSOLUTE_URL);
+            $previous = $this->generateUrl('survey_list', ['page'=> ($page ===1) ? 1 : $surveyRepository->getNbPages()], UrlGeneratorInterface::ABSOLUTE_URL);
+            $next = $this->generateUrl('survey_list', ['page'=> ((($page === $surveyRepository->getNbPages()) ? $surveyRepository->getNbPages() : ($page +1)))], UrlGeneratorInterface::ABSOLUTE_URL);
+            $last = $this->generateUrl('survey_list', ['page'=> $surveyRepository->getNbPages()], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $hal = new HALObject($this->generateUrl('survey_list', ['page'=> $page], UrlGeneratorInterface::ABSOLUTE_URL));
-        $hal->addLink('first', new HALLink($first));
-        $hal->addLink('previous', new HALLink($previous));
-        $hal->addLink('next', new HALLink($next));
-        $hal->addLink('last', new HALLink($last));
-
-        $context = $this->getContext();
-        $datas = array_merge(
-            $context->getProperties(),
-            ['paginations' => $hal],
-            ['nb_results' => count($surveyRepository->findAll())],
-            ['values' => $surveyRepository->paginateAt($page)]
-        );
-        return $this->json($datas, Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*'], ['groups' => ['survey_list']]);
+            $hal = new HALObject($this->generateUrl('survey_list', ['page'=> $page], UrlGeneratorInterface::ABSOLUTE_URL));
+            $hal->addLink('first', new HALLink($first));
+            $hal->addLink('previous', new HALLink($previous));
+            $hal->addLink('next', new HALLink($next));
+            $hal->addLink('last', new HALLink($last));
+            $context = $this->getContext();
+            $datas = array_merge(
+                $context->getProperties(),
+                ['paginations' => $hal],
+                ['nb_results' => count($surveyRepository->findAll())],
+                ['values' => $surveyRepository->paginateAt($page)]
+            );
+            $item->expiresAfter(10);
+            return $this->json($datas, Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*'], ['groups' => ['survey_list']]);
+        });
+        if ($result) {
+            return $result;
+        }
+        return $this->json([], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*'], ['groups' => ['survey_list']]);
     }
+
+
 
     /**
      * @SWG\Tag(name="Survey")
@@ -118,18 +133,29 @@ class SurveyController extends AbstractController
      *
      * @Route("/surveys/{id}", name="survey_show", methods={"GET"})
      * @param Survey $survey
+     * @param CacheInterface $cache
      * @return JsonResponse
+     * @throws InvalidArgumentException
      */
-    public function show(Survey $survey): JsonResponse
+    public function show(Survey $survey, CacheInterface $cache): JsonResponse
     {
-        $url = $this->generateUrl('survey_show', ['id'=> $survey->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
-        $hal = new HALObject($url);
+        $result = $cache->get('survey_show_cache'.$survey->getId().$survey->getCreatedAt()->format('YmdHis'), function (ItemInterface $item) use ($survey) {
 
+            $url = $this->generateUrl('survey_show', ['id'=> $survey->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
+            $hal = new HALObject($url);
 
-        $hal->addData(['survey' => $survey]);
-        $hal->addLink('update', new HALLink($url));
-        $hal->addLink('delete', new HALLink($url));
-        return $this->json($hal, Response::HTTP_OK, [], ['groups' => ['survey_show']]);
+            $hal->addData(['survey' => $survey]);
+            $hal->addLink('update', new HALLink($url));
+            $hal->addLink('delete', new HALLink($url));
+            $item->expiresAfter(10);
+            return $this->json($survey, Response::HTTP_OK, [], ['groups' => ['survey_show']]);
+        });
+
+        if ($result) {
+            return $result;
+        }
+
+        return $this->json([], Response::HTTP_OK, [], ['groups' => ['survey_show']]);
     }
 
     /**
