@@ -98,8 +98,6 @@ class SurveyController extends AbstractController
         return $this->json([], Response::HTTP_OK, ['Access-Control-Allow-Origin' => '*'], ['groups' => ['survey_list']]);
     }
 
-
-
     /**
      * @SWG\Tag(name="Survey")
      * @SWG\Parameter(

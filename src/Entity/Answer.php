@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\AnswerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=AnswerRepository::class)
@@ -20,12 +21,15 @@ class Answer
     private $id;
 
     /**
+     * @Assert\Type("string")
+     * @Assert\Length(min="3", minMessage="Le phrase doit avoir au moins {{ limit }} caractères.")
      * @ORM\Column(type="string", length=255)
      * @Groups({"question_list", "question_show", "answer_list"})
      */
     private $sentence;
 
     /**
+     * @Assert\Type("integer")
      * @ORM\Column(type="integer")
      * @Groups({"question_list", "question_show", "answer_list"})
      */
