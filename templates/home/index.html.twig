@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <!-- Banner -->
+    <section id="banner">
+        <div class="content">
+            <h1>Api sur les sondages</h1>
+            <p>Ceci est une api personnelle afin de faire des tests au niveau du front end.</p>
+            <ul class="actions">
+                <li><a href="{{ path('app.swagger_ui')}}" class="button scrolly">Voir la documentation</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- One -->
+    <section id="one" class="wrapper">
+        <div class="inner flex flex-3">
+            <div class="flex-item left">
+                <div>
+                    <h3>Inscription</h3>
+                    <p>Il y en a pas.<br /> Il y a qu'un seul utilisateur, <br> et c'est celui que je donne. <br> C'est pour des tests, je le rappel.</p>
+                </div>
+                <div>
+                    <h3>Type de données</h3>
+                    <p>C'est que des "lorems ipsum<br /> loreipsu gravida adipiscing lorem".</p>
+                </div>
+            </div>
+            <div class="flex-item right">
+                <div>
+                    <h3>Type d'api</h3>
+                    <p>J'ai mis tout ce qu'il fallait<br /> pour créer une api RESTfull.</p>
+                </div>
+                <div>
+                    <h3>Builder</h3>
+                    <p>Symfony 5.1<br /> avec la documention Nelmio.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
