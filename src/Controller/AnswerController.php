@@ -32,7 +32,7 @@ class AnswerController extends AbstractController
      *     description="Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Answer::class, groups={"answer_list"}))
+     *         @SWG\Items(ref=@Model(type=Answer::class))
      *     )
      * )
      * @SWG\Response(

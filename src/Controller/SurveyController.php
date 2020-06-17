@@ -40,7 +40,7 @@ class SurveyController extends AbstractController
      *     description="Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
+     *         @SWG\Items(ref=@Model(type=Survey::class))
      *     )
      * )
      * @SWG\Response(
@@ -114,7 +114,7 @@ class SurveyController extends AbstractController
      *     description="Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
+     *         @SWG\Items(ref=@Model(type=Survey::class))
      *     )
      * )
      * @SWG\Response(
@@ -165,14 +165,14 @@ class SurveyController extends AbstractController
      *    description="Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.",
      *    @SWG\Schema(
      *       type="array",
-     *       @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
+     *       @SWG\Items(ref=@Model(type=Survey::class))
      *     )
      * )
      * @SWG\Response(
      *     response=201,
      *     description="`Created`. Response to a POST that results in a creation. Should be combined with a Location header pointing to the location of the new resource.",
      *     @SWG\Schema(
-     *         @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
+     *         @SWG\Items(ref=@Model(type=Survey::class))
      *     )
      * )
      * @SWG\Response(
@@ -233,14 +233,14 @@ class SurveyController extends AbstractController
      *    description="Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.",
      *    @SWG\Schema(
      *       type="array",
-     *       @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
+     *       @SWG\Items(ref=@Model(type=Survey::class))
      *     )
      * )
      * @SWG\Response(
      *     response=201,
      *     description="`Created`. Response to a POST that results in a creation. Should be combined with a Location header pointing to the location of the new resource.",
      *     @SWG\Schema(
-     *         @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
+     *         @SWG\Items(ref=@Model(type=Survey::class))
      *     )
      * )
      * @SWG\Response(
@@ -294,7 +294,7 @@ class SurveyController extends AbstractController
      *    description="`No Content`. Response to a successful request that won't be returning a body (like a DELETE request).",
      *    @SWG\Schema(
      *       type="array",
-     *       @SWG\Items(ref=@Model(type=Survey::class, groups={"survey_list"}))
+     *       @SWG\Items(ref=@Model(type=Survey::class))
      *     )
      * )
      * @nSecurity(name="Bearer")

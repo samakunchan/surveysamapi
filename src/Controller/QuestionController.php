@@ -32,7 +32,7 @@ class QuestionController extends AbstractController
      *     description="Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Question::class, groups={"question_show"}))
+     *         @SWG\Items(ref=@Model(type=Question::class))
      *     )
      * )
      * @SWG\Response(
@@ -78,7 +78,7 @@ class QuestionController extends AbstractController
      *     description="Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.",
      *     @SWG\Schema(
      *         type="array",
-     *         @SWG\Items(ref=@Model(type=Question::class, groups={"question_show"}))
+     *         @SWG\Items(ref=@Model(type=Question::class))
      *     )
      * )
      * @SWG\Response(
