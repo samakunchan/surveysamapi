@@ -1,4 +1,6 @@
 # surveysamapi
 Api Survey
-Api Survey est créé avec Symfony 5 dans le but de l'utiliser avec Angular. C'est un simple gestionnaire de question "lorem ipsum"
-Cette api respecte la norme RESTFUL
+Api Survey is an API build with Symfony 5.
+
+## Objectif
+Use all methods from scratch to respect REST constraint and the maturity model of Richardson, that allow the API to be RESTFULL 
